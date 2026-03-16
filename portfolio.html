@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jin-Rou Chang — Portfolio</title>
+  <link rel="icon" type="image/png" href="media/icon.png"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── IMAGE LIGHTBOX ────────────────────────────────────── */
+.img-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.img-modal.open { display: flex; }
+.img-modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  object-fit: contain;
+  cursor: default;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+}
+.img-modal-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.img-modal-close:hover { color: var(--text); }
+.project-thumb img { cursor: zoom-in; }
+.video-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+/* Ensure video controls are visible and usable on mobile */
+.video-modal.open { display: flex; }
+.video-modal video {
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 8px;
+}
+.video-modal-close,
+.img-modal-close {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: #000;
+  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  z-index: 1001;
+  font-weight: 700;
+}
+.video-modal-close:hover,
+.img-modal-close:hover {
+  background: #fff;
+}
+    /* ── DESIGN TOKENS ─────────────────────────────────────── */
+    :root {
+      --bg:         #0d0e11;
+      --surface:    #14161b;
+      --surface2:   #1c1f27;
+      --border:     #252830;
+      --accent:     #f0a500;
+      --accent2:    #e05f1a;
+      --text:       #e8e9ec;
+      --muted:      #7a7f8e;
+      --heading:    'Syne', sans-serif;
+      --body:       'DM Sans', sans-serif;
+      --mono:       'DM Mono', monospace;
+    }
+
+    /* ── RESET & BASE ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #000; }
+
+    /* ── NOISE OVERLAY ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── TYPOGRAPHY ────────────────────────────────────────── */
+    h1, h2, h3, h4 { font-family: var(--heading); line-height: 1.1; }
+    a { color: inherit; text-decoration: none; }
+    p { color: #b0b3be; }
+    strong { color: var(--text); }
+
+    /* ── LAYOUT ────────────────────────────────────────────── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    section { padding: 100px 0; }
+
+    /* ── SECTION LABEL ─────────────────────────────────────── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 0;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,14,17,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--heading);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); color: #000; }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.35;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      border: 1px solid rgba(240,165,0,0.3);
+      padding: 0.3rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      background: rgba(240,165,0,0.06);
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .hero-name {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 1rem;
+    }
+    .hero-name .line2 {
+      -webkit-text-stroke: 1px rgba(232,233,236,0.3);
+      color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #000;
+      font-family: var(--heading);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 0.85rem 2rem;
+      border-radius: 4px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(240,165,0,0.3);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      font-family: var(--heading);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 0.85rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover {
+      border-color: var(--muted);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollDown 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollDown {
+      0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      50% { transform: scaleY(1); opacity: 1; }
+      100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ── STATS BAR ─────────────────────────────────────────── */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0;
+    }
+    .stats-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stat {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--heading);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SKILLS ────────────────────────────────────────────── */
+    #skills { padding: 100px 0; }
+    .skills-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .skills-intro h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .skills-intro p { margin-bottom: 1.5rem; line-height: 1.7; }
+    .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .skill-tag {
+      font-size: 13px;
+      padding: 0.35rem 0.85rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-weight: 400;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── PROJECTS ──────────────────────────────────────────── */
+    #projects { background: var(--surface); }
+    .projects-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .projects-header h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .filter-tab {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: none;
+    }
+    .filter-tab:hover, .filter-tab.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(240,165,0,0.07);
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border-color: rgba(240,165,0,0.3);
+    }
+    .project-thumb {
+      height: 200px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Placeholder engineering-themed thumbnails */
+    .project-thumb.cad {
+      background: linear-gradient(135deg, #0d1520 0%, #0a1f35 100%);
+    }
+    .project-thumb.robotics {
+      background: linear-gradient(135deg, #150d10 0%, #2a1408 100%);
+    }
+    .project-thumb.research {
+      background: linear-gradient(135deg, #0d1520 0%, #0a2010 100%);
+    }
+    .thumb-icon {
+      font-size: 3rem;
+      opacity: 0.5;
+    }
+    .project-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+    .badge-cad { color: #5bc0f8; border-color: rgba(91,192,248,0.4); background: rgba(91,192,248,0.08); }
+    .badge-robotics { color: #ff6b6b; border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.08); }
+    .badge-research { color: #7fdb8a; border-color: rgba(127,219,138,0.4); background: rgba(127,219,138,0.08); }
+    .project-info { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .project-title {
+      font-family: var(--heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .project-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .project-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .project-tool {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 0.2rem 0.6rem;
+      background: var(--surface);
+      border-radius: 3px;
+      color: var(--muted);
+    }
+    .project-links {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .project-link {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--accent); }
+
+    /* ── ABOUT ─────────────────────────────────────────────── */
+    #about {}
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-content h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .about-content p { margin-bottom: 1.25rem; line-height: 1.8; }
+    .about-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 14px;
+    }
+    .detail-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 0.45rem;
+      flex-shrink: 0;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,165,0,0.15), transparent 70%);
+    }
+    .about-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      /* Replace with: background-image: url('your-photo.jpg'); background-size: cover; */
+    }
+    .about-name {
+      font-family: var(--heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .about-role { font-size: 13px; color: var(--muted); margin-bottom: 1.25rem; }
+    .about-chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .about-chip {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 0.3rem 0.7rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── CONTACT ───────────────────────────────────────────── */
+    #contact {
+      background: var(--surface);
+      text-align: center;
+      padding: 120px 0;
+    }
+    #contact .section-label { justify-content: center; }
+    #contact .section-label::after { display: none; }
+    #contact h2 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    #contact p {
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .contact-link:hover {
+      color: var(--text);
+      border-color: var(--text);
+      transform: translateY(-2px);
+    }
+    .contact-link.primary {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .contact-link.primary:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    /* ── FOOTER ────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 0;
+      text-align: center;
+    }
+    footer p { font-size: 13px; color: var(--muted); }
+    footer span { color: var(--accent); }
+
+    /* ── FADE-IN ANIMATION ─────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      section { padding: 70px 0; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: none; }
+      .stat:nth-child(3), .stat:nth-child(4) { border-top: 1px solid var(--border); }
+      .skills-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .nav-links { display: none; }
+      .projects-header { flex-direction: column; align-items: flex-start; }
+      .filter-tabs { flex-wrap: wrap; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 1.25rem; }
+      .hero-name { font-size: 2.8rem; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <div class="nav-logo">J<span>.</span>C<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <!-- ✏️ Update href to your actual resume PDF file -->
+      <a href="JinRouChang_Resume_2602.pdf" target="_blank" class="nav-cta">Resume ↗</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="container hero-content">
+      <div class="hero-tag">Actively Seeking Summer 2026 Internships</div>
+      <!-- ✏️ Replace with your actual name -->
+      <h1 class="hero-name">
+        Jin-Rou<br>
+        <span class="line2">Chang</span>
+      </h1>
+      <!-- ✏️ Update your school, year, and focus -->
+      <p class="hero-sub">
+        M.S. <strong>Mechanical Engineering</strong> at <strong>University of Michigan</strong>, 
+  B.S. from <strong>National Taiwan University</strong>. I build things that move — from 
+  kinodynamic motion planners and vision-guided robot arms to 
+  CFD-optimized wing mechanisms and fabricated prototypes. 
+  Looking for roles in <strong>mechanical design</strong>, 
+  <strong>product development</strong>, or 
+  <strong>robotics hardware</strong>.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn-primary">View Projects →</a>
+        <!-- ✏️ Update to your email -->
+        <a href="#contact" class="btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- ── STATS BAR ─────────────────────────────────────────── -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-inner" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="stat fade-in">
+    <div class="stat-number">9+</div>
+    <div class="stat-label">Engineering Projects</div>
+  </div>
+  <div class="stat fade-in">
+    <div class="stat-number">7</div>
+    <div class="stat-label">CAD & Simulation Tools</div>
+  </div>
+  <div class="stat fade-in">
+    <div class="stat-number">300+</div>
+    <div class="stat-label">Students Instructed</div>
+  </div>
+</div>
+  <!-- ── SKILLS ────────────────────────────────────────────── -->
+  <section id="skills">
+    <div class="container">
+      <div class="skills-layout">
+        <div class="skills-intro fade-in">
+          <div class="section-label">Skills & Tools</div>
+          <h2>From simulation to reality</h2>
+          <!-- ✏️ Update your own background summary -->
+          <p>
+    I work across the full design cycle — CAD and simulation, 
+    hands-on fabrication, and software integration. Equally 
+    comfortable running FEA in ABAQUS and debugging a robot 
+    arm in Python.
+  </p>
+  <p>
+    One year of industry experience at Garmin in a 
+    manufacturing engineering role added real production 
+    context to my design thinking.
+  </p>
+        </div>
+        <div class="skills-grid fade-in">
+
+          <div>
+            <div class="skill-group-title">CAD & Simulation</div>
+            <!-- ✏️ Update skills to match yours -->
+            <div class="skill-tags">
+              <span class="skill-tag">SolidWorks</span>
+              <span class="skill-tag">Inventor</span>
+              <span class="skill-tag">AutoCAD</span>
+              <span class="skill-tag">Fusion 360</span>
+              <span class="skill-tag">Onshape</span>
+              <span class="skill-tag">ABAQUS (FEA)</span>
+              <span class="skill-tag">Autodesk CFD</span>
+                            <span class="skill-tag">GD&T</span>
+              <span class="skill-tag">DFMEA</span>
+
+            </div>
+          </div>
+          <div>
+            <div class="skill-group-title">Robotics & Software</div>
+            <div class="skill-tags">
+                            <span class="skill-tag">Python</span>
+
+              <span class="skill-tag">MATLAB / Simulink</span>
+              <span class="skill-tag">C / C++</span>
+              <span class="skill-tag">OpenCV</span>
+                            <span class="skill-tag">Arduino</span>
+              <span class="skill-tag">RRT motion planning</span>
+              <span class="skill-tag">PyBullet</span>
+              <span class="skill-tag">Git</span>
+              <span class="skill-tag">Linux</span>
+            </div>
+          </div>
+          <div>
+            <div class="skill-group-title">Fabrication & Prototyping</div>
+            <div class="skill-tags">
+              <span class="skill-tag">3D Printing</span>
+              <span class="skill-tag">Laser Cutting</span>
+              <span class="skill-tag">CNC Milling</span>
+              <span class="skill-tag">Welding</span>
+              <span class="skill-tag">Lathe / Grinding</span>
+              <span class="skill-tag">Soldering</span>
+              <span class="skill-tag">Benchwork</span>
+            </div>
+          </div>
+
+
+
+          <div>
+            <div class="skill-group-title">Coursework</div>
+            <div class="skill-tags">
+              <span class="skill-tag">Design for Manufacturability</span>
+              <span class="skill-tag">Design Optimization</span>
+              <span class="skill-tag">Introduction to Algorithmic Robotics</span>
+              <span class="skill-tag">Robotics Systems Lab</span>
+              <span class="skill-tag">Vehicle Control Systems</span>
+              <!-- <span class="skill-tag">Controls</span> -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ──────────────────────────────────────────── -->
+  <section id="projects">
+    <div class="container">
+      <div class="projects-header fade-in">
+        <div>
+          <div class="section-label">Portfolio</div>
+          <h2>Selected Projects</h2>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="cad">CAD</button>
+
+          <button class="filter-tab" data-filter="robotics">Robotics</button>
+                              <!-- <button class="filter-tab" data-filter="grad">Graduate Projects</button> -->
+                              <button class="filter-tab" data-filter="research">Research</button>
+
+          <!-- <button class="filter-tab" data-filter="undergrad">Undergraduate Projects</button> -->
+        </div>
+      </div>
+
+      <div class="projects-grid">
+
+        <!-- ✏️ PROJECT 1 — Update title, description, tools, and links -->
+        <div class="project-card fade-in" data-category="robotics">
+          <div class="project-thumb robotics">
+            <span class="thumb-icon"><img src="thumbnail/2602_armlab_shape_differentiation.png" style="width:100%;height:100%;object-fit:cover;"     onclick="openImg(this.src)">
+></span>
+            <!-- ✏️ Replace emoji thumb with: <img src="project1.jpg" style="width:100%;height:100%;object-fit:cover;"> -->
+            <span class="project-badge badge-robotics">Robotics</span>
+          </div>
+          <div class="project-info">
+            <div class="project-title">Vision-Guided Autonomous Block Stacking with RX200</div>
+            <div class="project-desc">
+              Designed and integrated a vision-guided manipulation system combining an Interbotix RX200 5-DOF arm and Intel RealSense L515 RGB-D camera for autonomous block stacking.
+              Developed a closed-loop stacking routine in Python using camera-derived world coordinates and an OpenCV-based cube filter to reject non-cubic blocks and improve stacking reliability during hardware bring-up.
+
+            </div>
+            <div class="project-tools">
+              <span class="project-tool">Python</span>
+              <span class="project-tool">OpenCV</span>
+              <span class="project-tool">Git</span>
+            </div>
+            <div class="project-links">
+              <!-- ✏️ Update hrefs to your actual links (GitHub, PDF, etc.) -->
+               
+              <button onclick="openVideo('https://youtube.com/shorts/wYYHkwP8-Y0', true)" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Block-Stacking Video</button>
+              <a href="media/2602_s011-t09-armlab-wi26.pdf" target="_blank" class="project-link">↗ Full Report</a>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ✏️ PROJECT 2 -->
+        <div class="project-card fade-in" data-category="robotics">
+          <div class="project-thumb robotics">
+            <span class="thumb-icon"><img src="thumbnail/2512_RRT_tree.png" style="width:100%;height:100%;object-fit:cover;"onclick="openImg(this.src)">
+></span>
+            <span class="project-badge badge-robotics">Robotics</span>
+          </div>
+          <div class="project-info">
+            <div class="project-title">Kinodynamic Motion Planning (RRT-based)</div>
+            <div class="project-desc">
+              Implemented a kinodynamic RRT planner in Python for a planar hovercraft via forward simulation of system dynamics and motion primitives, enabling collision-free planning under acceleration and velocity constraints.
+Built a physics-based PyBullet simulation with obstacles and evaluated planner performance by varying motion primitives, visualizing the search tree and generating dynamically feasible trajectories that reached the goal.
+
+            </div>
+            <div class="project-tools">
+              <span class="project-tool">Python</span>
+              <span class="project-tool">PyBullet</span>
+              <!-- <span class="project-tool">Git</span> -->
+            </div>
+            <div class="project-links">
+              <!-- https://youtu.be/9rttyivxOFc -->
+              <button onclick="openVideo('https://youtu.be/9rttyivxOFc')" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Demo Video</button>
+              <!-- <a href="media/2512_RRT_tree.png" class="project-link">↗ RRT Tree</a> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ✏️ PROJECT 3 -->
+        <div class="project-card fade-in" data-category="cad">
+          <div class="project-thumb cad">
+            <span class="thumb-icon"><img src="thumbnail/2512_ME452_thumbnail.png" style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)">
+            <span class="project-badge badge-cad">CAD</span>
+          </div>
+          <div class="project-info">
+            <div class="project-title">Smoothie Maker Redesign with Manufacturability Analysis</div>
+            <div class="project-desc">
+Redesigned CAD modules in SolidWorks for a professional-use variant, increasing container capacity, adding handles for portability while preserving common mechanical interfaces to enable cross-variant interchangeability.
+Performed DFMEA-driven redesign of a stainless-steel sheet metal component using SolidWorks DFMPro with analytical cost modeling across production volumes.
+            </div>
+            <div class="project-tools">
+              <span class="project-tool">SolidWorks</span>
+              <span class="project-tool">DFMPro</span>
+              <!-- <span class="project-tool">MATLAB</span> -->
+              <!-- <span class="project-tool">Python</span> -->
+            </div>
+            <div class="project-links">
+              <a href="media/2512_ME452-DFM-Project.pdf" target="_blank"class="project-link">↗ My Contributions</a>
+              <a href="media/2512_ME452_final_report.pdf" target="_blank" class="project-link">↗ Full Report</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✏️ PROJECT 4 — Add or remove cards as needed -->
+        <div class="project-card fade-in" data-category="cad">
+          <div class="project-thumb cad">
+            <span class="thumb-icon"><img src="thumbnail/2408_hps_sortify_prototype.JPG" style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)">
+            <span class="project-badge badge-cad">CAD</span>
+          </div>
+          <div class="project-info">
+            <div class="project-title">Google Hardware Product Sprint - RFID-Enabled Laundry Sorting Basket	</div>
+            <div class="project-desc">
+Created mechanical components and enclosure structure in Inventor/AutoCAD, integrating Arduino control and fabricating prototypes via 3D-printed PLA and laser-cut MDF and acrylic, resulting in a functional system prototype.
+Led the mechanical design and collaborated in a 5-person team to deliver and present the prototype, articulating design rationale and trade-offs to Google hardware engineers.
+            </div>
+            <div class="project-tools">
+              <span class="project-tool">AutoCAD</span>
+              <span class="project-tool">Inventor</span>
+              <span class="project-tool">Arduino</span>
+                <span class="project-tool">3D Printing</span>
+                <span class="project-tool">Laser Cutting</span>
+                <span class="project-tool">Prototyping</span>
+            </div>
+            <div class="project-links">
+              <!-- https://youtu.be/GBtIajpfL7o -->
+              <button onclick="openVideo('https://youtube.com/shorts/GBtIajpfL7o')" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Inventor Studio Demo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✏️ PROJECT 5 -->
+        <div class="project-card fade-in" data-category="cad">
+          <div class="project-thumb cad">
+            <span class="thumb-icon"><img src="thumbnail/2306_pme.jpeg" style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)"></span>
+            <span class="project-badge badge-cad">CAD</span>
+          </div>
+          <div class="project-info">
+            <div class="project-title">Crosswind-Stabilized Autonomous Vehicle - Junior Capstone Project</div>
+            <div class="project-desc">
+               Designed a wing geometry that redirects lateral crosswind into vertical 
+  downforce and a deployable mechanism to auto-deploy in the crosswind zone, 
+  achieving a 20% normal load increase measured by track load cells. 
+  Iterated across different airfoil profiles and angles of attack in Autodesk CFD to select optimal wing geometry; fabricated the full vehicle 
+  from scratch using laser-cut MDF and 3D-printed PLA.
+            </div>
+            <div class="project-tools">
+              <span class="project-tool">Inventor</span>
+              <span class="project-tool">Autodesk CFD</span>
+              <span class="project-tool">AutoCAD</span>
+                <span class="project-tool">3D Printing</span>
+                  <span class="project-tool">Laser Cutting</span>
+                  <span class="project-tool">Prototyping</span>
+                  <span class="project-tool">Welding</span>
+                
+            </div>
+            <div class="project-links">
+              
+              <button onclick="openVideo('https://youtube.com/shorts/C-7Po5aWy0o?feature=share', true)" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Final Testing Video</button>
+              <button onclick="openVideo('https://youtube.com/shorts/G4kwVCv885o', true)" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Wing deployment Video</button>
+              <a href="media/2306_pme_airfoilsim.pdf" target="_blank" class="project-link">↗ Airfoil CFD Analysis</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✏️ PROJECT 6 -->
+        <div class="project-card fade-in" data-category="research">
+          <div class="project-thumb research">
+            <span class="thumb-icon"><img src="thumbnail/2411_csmmt.png" style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)"></span>
+            <span class="project-badge badge-research">Research</span>
+          </div>
+          <div class="project-info">
+          <div class="project-title">Kinematic Analysis of Beginning Movement Load Theory (BMLT) Equipment	</div>
+<div class="project-desc">
+  Analyzed patented training equipment mechanisms (crank-slider, bevel 
+  gear, chain drive) from US, Japan, and China patents. Derived kinematic and dynamic equations for the crank-slider load transmission 
+  system and modeled torque–angle relationships in MATLAB, revealing sinusoidal load variation under constant angular velocity and 
+  acceleration conditions. Presented at CSMMT 2024.
+</div>
+<div class="project-tools">
+  <span class="project-tool">MATLAB</span>
+  <span class="project-tool">Kinematic Analysis</span>
+  <span class="project-tool">Patent Research</span>
+  <!-- <span class="project-tool">Dynamic Modeling</span> -->
+</div>
+<div class="project-links">
+  <a href="media/2411_csmmt_abstract.pdf" target="_blank" class="project-link">↗ Conference Abstract</a>
+</div>
+          </div>
+        </div>
+<div class="project-card fade-in" data-category="research">
+  <div class="project-thumb research">
+    <span class="thumb-icon"><img src="thumbnail/2306_TSL.png" 
+         style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)">
+    <span class="project-badge badge-research">Research</span>
+  </div>
+  <div class="project-info">
+    <div class="project-title">Facial Expression Recognition for Taiwanese Sign Language</div>
+    <div class="project-desc">
+      Built a real-time facial landmark pipeline in Python using 
+      OpenCV and MediaPipe to classify nine facial expressions for 
+      Taiwanese Sign Language recognition. Published in CSME 2023 
+      proceedings.
+    </div>
+    <div class="project-tools">
+      <span class="project-tool">Python</span>
+      <span class="project-tool">OpenCV</span>
+      <span class="project-tool">MediaPipe</span>
+      <!-- <span class="project-tool">Real-Time CV</span> -->
+    </div>
+    <div class="project-links">
+      <a href="media/2306_CSME-Taiwanese Sign Language Visual Recognition.pdf" target="_blank" 
+         class="project-link">↗ Conference Paper</a>
+    </div>
+  </div>
+</div>
+<div class="project-card fade-in" data-category="cad">
+  <div class="project-thumb cad">
+    <span class="thumb-icon"><img src="media/2306_prosthetic_fingers.jpeg" style="width:100%;height:100%;object-fit:cover;" onclick="openImg(this.src)"></span>
+    <span class="project-badge badge-cad">CAD</span>
+  </div>
+  <div class="project-info">
+    <div class="project-title">Bioinspired Prosthetic Finger — Six-Bar Linkage Redesign</div>
+    <div class="project-desc">
+      Applied creative design methodology to redesign a Stephenson 
+      six-bar prosthetic finger mechanism, iterating through number 
+      synthesis and kinematic analysis to select an optimal linkage 
+      topology. Validated motion trajectory using Linkage software 
+      and fabricated the physical prototype via laser-cut MDF.
+    </div>
+    <div class="project-tools">
+      <span class="project-tool">Inventor</span>
+      <span class="project-tool">Linkage.exe</span>
+      <!-- <span class="project-tool">Kinematic Synthesis</span> -->
+      <span class="project-tool">Laser Cutting</span>
+    </div>
+    <div class="project-links">
+      
+      <button onclick="openVideo('https://youtu.be/UFhd4rBWj44')" class="project-link" style="background:none;border:none;cursor:pointer;">↗ Finger Motion Video</button>
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ─────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-layout">
+        <div class="about-content fade-in">
+  <div class="section-label">About Me</div>
+  <h2>Hi, I'm Jin-Rou</h2>
+  <p>
+    I'm a Master's student in Mechanical Engineering at the 
+    University of Michigan, with a B.S. from National Taiwan 
+    University. My work lives at the intersection of mechanical 
+    design and intelligent systems — I care about building things 
+    that are both well-engineered and actually work in the real world.
+  </p>
+  <p>
+    Before grad school, I spent a year at Garmin as a 
+    manufacturing engineering intern, where I created 160+ PCB 
+    diagrams and authored DFM documentation for mass 
+    production transitions — which taught me to design with 
+    manufacturing constraints in mind from day one.
+  </p>
+  <p>
+    My projects range from CFD-optimized wing mechanisms and 
+    prosthetic finger linkages to vision-guided robot arms and 
+    motion planners. I also served as a Teaching Assistant at NTU, 
+    delivering 200+ hours of lab instruction to 300+ students 
+    across five core ME courses.
+  </p>
+  <p>
+    I'm currently seeking Summer 2026 internship opportunities 
+    in mechanical design, product development, or robotics hardware.
+  </p>
+  <div class="about-details">
+    <div class="detail-item">
+      <div class="detail-dot"></div>
+      <span>University of Michigan</span>
+    </div>
+    <div class="detail-item">
+      <div class="detail-dot"></div>
+      <span>M.S. ME, Class of 2027</span>
+    </div>
+   
+    <div class="detail-item">
+      <div class="detail-dot"></div>
+      <span>Ann Arbor, MI</span>
+    </div>
+     <div class="detail-item">
+      <div class="detail-dot"></div>
+      <span>B.S. ME, National Taiwan University, Dean's List</span>
+    </div>
+  </div>
+</div>
+
+        <div class="about-visual fade-in">
+          <div class="about-card">
+            <div class="about-avatar"><img src = "thumbnail/Jin-Rou_Chang.jpg" style="width:100%;height:100%;object-fit:cover;"></thumbnail></div>
+            <!-- ✏️ Replace above div with your photo:
+            <img src="photo.jpg" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:1rem;"> -->
+            <!-- ✏️ Update name and role -->
+            <div class="about-name">Jin-Rou (Jennifer) Chang</div>
+            <div class="about-role">M.S. Mechanical Engineering · University of Michigan</div>
+            <div class="about-chip-row">
+    <span class="about-chip">Mechanical Design</span>
+    <span class="about-chip">Robotics Hardware</span>
+    <span class="about-chip">Product Development</span>
+    <span class="about-chip">DFM / DFA</span>
+    <span class="about-chip">Prototyping</span>
+    <span class="about-chip">Computer Vision</span>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ────────────────────────────────────────────── -->
+  <section id="contact">
+    <div class="container fade-in">
+      <div class="section-label">Contact</div>
+       <h2>Let's build something.</h2>
+    <p>
+      Actively seeking Summer 2026 internships in mechanical design, 
+      product development, or robotics hardware. Based in Ann Arbor — 
+      open to relocation, on-site, hybrid, or remote. I respond within a day.
+    </p>
+      <div class="contact-links">
+        <!-- ✏️ Update all three links -->
+        <a href="mailto:jinrou@umich.edu" class="contact-link primary">✉ jinrou@umich.edu</a>
+        <a href="https://www.linkedin.com/in/jin-rou-chang" target="_blank" class="contact-link">in LinkedIn</a>
+        <!-- <a href="https://github.com/yourhandle" target="_blank" class="contact-link">⌥ GitHub</a> -->
+        <a href="JinRouChang_Resume_2602.pdf" target="_blank" class="contact-link">↗ Resume PDF</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <!-- ✏️ Update your name -->
+      <p>© 2026 <span>Jin-Rou Chang</span>. Mechanical Engineer in progress.</p>
+    </div>
+  </footer>
+
+  <!-- ── JS: Scroll nav, fade-in, filter ───────────────────── -->
+  <script>
+
+    // Sticky nav
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Project filter
+    const tabs = document.querySelectorAll('.filter-tab');
+    const cards = document.querySelectorAll('.project-card');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        cards.forEach(card => {
+          const show = filter === 'all' || card.dataset.category === filter;
+          card.style.display = show ? 'flex' : 'none';
+        });
+      });
+    });
+    // Image lightbox
+function openImg(src) {
+  document.getElementById('modalImg').src = src;
+  const modal = document.getElementById('imgModal');
+  modal.classList.add('open');
+  modal.focus(); // ← add this
+}
+function closeImg() {
+  document.getElementById('imgModal').classList.remove('open');
+  document.getElementById('modalImg').src = '';
+}
+
+function openVideo(url, isShort = false) {
+  const iframe = document.getElementById('modalVideo');
+  if (isShort) {
+    iframe.width = '400';
+    iframe.height = '711';
+  } else {
+    iframe.width = '1280';
+    iframe.height = '720';
+  }
+  iframe.src = url + '?autoplay=1&mute=1';
+  const modal = document.getElementById('videoModal');
+  modal.classList.add('open');
+  modal.focus(); // ← add this
+}
+function closeVideo() {
+  document.getElementById('modalVideo').src = '';
+  document.getElementById('videoModal').classList.remove('open');
+}
+
+
+  </script>
+<!-- ── IMAGE LIGHTBOX ──────────────────────────────────── -->
+<div class="img-modal" id="imgModal" tabindex="0">
+  <div class="img-modal-close" onclick="closeImg()">✕ Close</div>
+  <img id="modalImg" src="" alt="">
+</div>
+<div class="video-modal" id="videoModal" tabindex="0">
+  <div class="video-modal-close" onclick="closeVideo()">✕ Close</div>
+  <iframe id="modalVideo" 
+          width="1280" height="720"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="border-radius:8px; max-width:92vw; max-height:92vh; display:block;">
+  </iframe>
+</div>
+</body>
+</html>
